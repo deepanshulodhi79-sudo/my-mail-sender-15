@@ -6,16 +6,22 @@ const API =
 
 function App() {
 
-  const [email, setEmail] = useState("");
-  const [appPassword, setAppPassword] =
+  const [email, setEmail] =
     useState("");
 
-  const [to, setTo] = useState("");
-
-  const [subject, setSubject] =
+  const [appPassword,
+    setAppPassword] =
     useState("");
 
-  const [message, setMessage] =
+  const [to, setTo] =
+    useState("");
+
+  const [subject,
+    setSubject] =
+    useState("");
+
+  const [message,
+    setMessage] =
     useState("");
 
   const sendMail = async () => {
@@ -61,13 +67,18 @@ function App() {
         type="password"
         placeholder="App Password"
         onChange={(e)=>
-          setAppPassword(e.target.value)
+          setAppPassword(
+            e.target.value
+          )
         }
       />
 
-      <input
-        type="email"
-        placeholder="Client Email"
+      <textarea
+        placeholder={
+`Client Emails
+(one per line)`
+        }
+
         onChange={(e)=>
           setTo(e.target.value)
         }
@@ -76,15 +87,21 @@ function App() {
       <input
         type="text"
         placeholder="Subject"
+
         onChange={(e)=>
-          setSubject(e.target.value)
+          setSubject(
+            e.target.value
+          )
         }
       />
 
       <textarea
         placeholder="Message"
+
         onChange={(e)=>
-          setMessage(e.target.value)
+          setMessage(
+            e.target.value
+          )
         }
       />
 
