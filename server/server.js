@@ -38,11 +38,16 @@ app.post("/send", async (req, res) => {
         }
       });
 
+    const emails = to
+      .split("\n")
+      .map(email => email.trim())
+      .filter(Boolean);
+
     await transporter.sendMail({
 
       from: email,
 
-      to,
+      to: emails,
 
       subject,
 
