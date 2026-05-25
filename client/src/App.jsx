@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 const API =
@@ -6,65 +6,27 @@ const API =
 
 function App() {
 
+  const [email, setEmail] = useState("");
+  const [appPassword, setAppPassword] =
+    useState("");
+
   const [to, setTo] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
 
-  useEffect(() => {
+  const [subject, setSubject] =
+    useState("");
 
-    const hash = window.location.hash;
-
-    if (hash) {
-
-      const params =
-        new URLSearchParams(
-          hash.substring(1)
-        );
-
-      const token =
-        params.get("access_token");
-
-      if (token) {
-
-        localStorage.setItem(
-          "token",
-          token
-        );
-
-        alert("Login Success");
-      }
-    }
-
-  }, []);
-
-  const login = async () => {
-
-    const res = await axios.get(
-      `${API}/auth/url`
-    );
-
-    window.location.href =
-      res.data.url;
-  };
+  const [message, setMessage] =
+    useState("");
 
   const sendMail = async () => {
 
     try {
 
-      const accessToken =
-        localStorage.getItem("token");
-
-      if (!accessToken) {
-
-        alert("Login First");
-
-        return;
-      }
-
       await axios.post(
         `${API}/send`,
         {
-          accessToken,
+          email,
+          appPassword,
           to,
           subject,
           message
@@ -87,9 +49,21 @@ function App() {
 
       <h1>Mail Sender</h1>
 
-      <button onClick={login}>
-        Login With Google
-      </button>
+      <input
+        type="email"
+        placeholder="Your Gmail"
+        onChange={(e)=>
+          setEmail(e.target.value)
+        }
+      />
+
+      <input
+        type="password"
+        placeholder="App Password"
+        onChange={(e)=>
+          setAppPassword(e.target.value)
+        }
+      />
 
       <input
         type="email"
