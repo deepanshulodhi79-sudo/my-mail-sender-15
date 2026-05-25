@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const API =
- "http://localhost:5000";
+ "https://my-mail-sender-15.onrender.com";
 
 function App() {
 
