@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-const { google } = require("googleapis");
+const nodemailer = require("nodemailer");
 
 const app = express();
 
@@ -11,31 +11,8 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI
-);
-
 app.get("/", (req, res) => {
-  res.send("Backend Running");
-});
-
-app.get("/auth/url", (req, res) => {
-
-  const url =
-    oauth2Client.generateAuthUrl({
-
-      access_type: "online",
-
-      response_type: "token",
-
-      scope: [
-        "https://www.googleapis.com/auth/gmail.send"
-      ]
-    });
-
-  res.json({ url });
+  res.send("Server Running");
 });
 
 app.post("/send", async (req, res) => {
@@ -43,41 +20,33 @@ app.post("/send", async (req, res) => {
   try {
 
     const {
-      accessToken,
+      email,
+      appPassword,
       to,
       subject,
       message
     } = req.body;
 
-    oauth2Client.setCredentials({
-      access_token: accessToken
-    });
+    const transporter =
+      nodemailer.createTransport({
 
-    const gmail = google.gmail({
-      version: "v1",
-      auth: oauth2Client
-    });
+        service: "gmail",
 
-    const mail = [
-      `To: ${to}`,
-      "Content-Type: text/html; charset=UTF-8",
-      "MIME-Version: 1.0",
-      `Subject: ${subject}`,
-      "",
-      message
-    ].join("\n");
+        auth: {
+          user: email,
+          pass: appPassword
+        }
+      });
 
-    const encodedMail = Buffer
-      .from(mail)
-      .toString("base64")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_");
+    await transporter.sendMail({
 
-    await gmail.users.messages.send({
-      userId: "me",
-      requestBody: {
-        raw: encodedMail
-      }
+      from: email,
+
+      to,
+
+      subject,
+
+      text: message
     });
 
     res.json({
